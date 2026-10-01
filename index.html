@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0e1013">
+  <meta name="description" content="Diário de treino: rotinas, séries, timer de descanso e progresso.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gym">
+  <title>Gym — Diário de Treino</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="main" class="wrap"></main>
+
+  <div id="rest" class="rest" hidden>
+    <div class="rest-bar"><i id="rest-fill"></i></div>
+    <div class="rest-body">
+      <div>
+        <small class="muted">Descanso</small>
+        <strong id="rest-time">0:00</strong>
+      </div>
+      <div class="rest-btns">
+        <button class="btn sm" data-a="rest-add" data-s="-15">−15s</button>
+        <button class="btn sm" data-a="rest-add" data-s="15">+15s</button>
+        <button class="btn sm primary" data-a="rest-skip">Pular</button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="nav" aria-label="Navegação principal">
+    <button data-a="tab" data-tab="treino"><span aria-hidden="true">🏋️</span>Treino</button>
+    <button data-a="tab" data-tab="rotinas"><span aria-hidden="true">📋</span>Rotinas</button>
+    <button data-a="tab" data-tab="historico"><span aria-hidden="true">🗓️</span>Histórico</button>
+    <button data-a="tab" data-tab="progresso"><span aria-hidden="true">📈</span>Progresso</button>
+    <button data-a="tab" data-tab="ajustes"><span aria-hidden="true">⚙️</span>Ajustes</button>
+  </nav>
+
+  <div id="modal" class="modal" hidden></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
