@@ -116,6 +116,54 @@ const lastSets = (exId) => { const h = historyOf(exId); return h.length ? h[h.le
 const sessionVolume = (s) => s.entries.reduce((v, en) => v + en.sets.reduce((a, x) => a + x.w * x.r, 0), 0);
 const sessionSets = (s) => s.entries.reduce((n, en) => n + en.sets.length, 0);
 
+/* ---------- Ícones (traço, estilo Lucide) ---------- */
+const ICONS = {
+  dumbbell: '<path d="M14.4 14.4 9.6 9.6"/><path d="M18.66 21.49a2 2 0 1 1-2.83-2.83l-1.77 1.77a2 2 0 1 1-2.83-2.83l6.36-6.36a2 2 0 1 1 2.83 2.83l-1.77 1.77a2 2 0 1 1 2.83 2.83z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.4 12.77a2 2 0 1 1-2.83-2.83l1.77-1.77a2 2 0 1 1-2.83-2.83l2.83-2.83a2 2 0 1 1 2.83 2.83l1.77-1.77a2 2 0 1 1 2.83 2.83z"/>',
+  list: '<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4M12 16h4M8 11h.01M8 16h.01"/>',
+  calendar: '<rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  chart: '<path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/>',
+  settings: '<path d="M20 7h-9M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  plus: '<path d="M5 12h14M12 5v14"/>',
+  minus: '<path d="M5 12h14"/>',
+  x: '<path d="M18 6 6 18M6 6l12 12"/>',
+  up: '<path d="m18 15-6-6-6 6"/>',
+  back: '<path d="m15 18-6-6 6-6"/>',
+  edit: '<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>',
+  play: '<path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z" fill="currentColor" stroke="none"/>',
+  flame: '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+  trophy: '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  zap: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
+  copy: '<rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2"/>',
+  trash: '<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2"/>',
+  download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/>',
+  upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  scale: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+  layers: '<path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/>',
+  note: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>',
+  phone: '<rect x="5" y="2" width="14" height="20" rx="3"/><path d="M12 18h.01"/>',
+  bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+};
+const ic = (n, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n] || ''}</svg>`;
+
+const TABS = [['treino', 'dumbbell', 'Treino'], ['rotinas', 'list', 'Rotinas'], ['historico', 'calendar', 'Histórico'], ['progresso', 'chart', 'Progresso'], ['ajustes', 'settings', 'Ajustes']];
+
+// Cada rotina ganha um par de cores para o selo (A, B, C…)
+const PALETTE = [['#ff8a3d', '#ff2d78'], ['#7c5cff', '#3dc8ff'], ['#22d39a', '#3dc8ff'], ['#ffc53d', '#ff6a3d'], ['#ff2d78', '#7c5cff'], ['#3dc8ff', '#22d39a']];
+const grad = (r) => {
+  const i = Math.max(0, S.routines.findIndex((x) => x.id === r.id));
+  const [a, b] = PALETTE[i % PALETTE.length];
+  return `--g1:${a};--g2:${b}`;
+};
+const badge = (name) => {
+  const m = String(name).match(/treino\s+([a-z0-9])\b/i);
+  return (m ? m[1] : String(name).trim()[0] || '?').toUpperCase();
+};
+const estMin = (r) => Math.max(5, Math.round(r.items.reduce((t, i) => t + i.sets * ((+i.rest || 0) + 40), 0) / 60 / 5) * 5);
+const emptyState = (icon, text) => `<div class="empty"><span class="e-icon">${ic(icon)}</span><p>${text}</p></div>`;
+
 /* ---------- Render ---------- */
 function render() {
   const views = { treino: vTreino, rotinas: vRotinas, historico: vHistorico, progresso: vProgresso, ajustes: vAjustes };
@@ -129,30 +177,47 @@ function vTreino() {
   const now = Date.now();
   const thisWeek = S.sessions.filter((s) => s.start >= weekStart(now)).length;
   const next = nextRoutine();
+  const h = new Date().getHours();
+  const hello = h < 5 ? 'Boa noite' : h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
   return `
-    <header class="top"><h1 class="grow">Bora treinar 💪</h1></header>
+    <header class="top">
+      <div class="grow">
+        <p class="eyebrow">${hello} · ${fmtDate(now, { weekday: 'long', day: 'numeric', month: 'long' }).replace('-feira', '')}</p>
+        <h1>Bora treinar</h1>
+      </div>
+    </header>
     <div class="stats">
-      <div class="stat"><b>${thisWeek}</b><span>treinos nesta semana</span></div>
-      <div class="stat"><b>${streakWeeks()}</b><span>semanas seguidas</span></div>
-      <div class="stat"><b>${S.sessions.length}</b><span>treinos no total</span></div>
+      <div class="stat s1"><span class="stat-ic">${ic('flame')}</span><b>${streakWeeks()}</b><span>semanas seguidas</span></div>
+      <div class="stat s2"><span class="stat-ic">${ic('calendar')}</span><b>${thisWeek}</b><span>nesta semana</span></div>
+      <div class="stat s3"><span class="stat-ic">${ic('trophy')}</span><b>${S.sessions.length}</b><span>treinos no total</span></div>
     </div>
     ${next ? `
-      <section class="card hero">
-        <small>Próximo treino sugerido</small>
+      <section class="hero" style="${grad(next)}">
+        <div class="hero-top">
+          <span class="pill">${ic('zap')} Próximo treino</span>
+          <span class="badge lg">${badge(next.name)}</span>
+        </div>
         <h2>${esc(next.name)}</h2>
-        <p class="muted small">${next.items.map((i) => esc(exName(i.exerciseId))).join(' · ') || 'Sem exercícios'}</p>
-        <button class="btn primary big" data-a="start" data-id="${next.id}">Começar treino</button>
+        <div class="meta">
+          <span>${ic('dumbbell')} ${next.items.length} exercícios</span>
+          <span>${ic('clock')} ~${estMin(next)} min</span>
+        </div>
+        <div class="tags">${next.items.slice(0, 3).map((i) => `<span class="tag">${esc(exName(i.exerciseId))}</span>`).join('')}${next.items.length > 3 ? `<span class="tag">+${next.items.length - 3}</span>` : ''}</div>
+        <button class="btn primary big" data-a="start" data-id="${next.id}">${ic('play')} Começar treino</button>
       </section>` : ''}
-    <h3 class="sec">Suas rotinas</h3>
+    <div class="sec-head"><h3>Suas rotinas</h3><button class="link" data-a="tab" data-tab="rotinas">Gerenciar</button></div>
     <div class="list">
       ${S.routines.map((r) => `
-        <div class="card row">
-          <div class="grow"><b>${esc(r.name)}</b>
-            <div class="muted small">${r.items.length} exercícios${lastDoneLabel(r.id)}</div></div>
-          <button class="btn" data-a="start" data-id="${r.id}">Iniciar</button>
-        </div>`).join('') || '<p class="muted">Nenhuma rotina ainda. Crie uma na aba Rotinas.</p>'}
+        <div class="card r-card">
+          <span class="badge" style="${grad(r)}">${badge(r.name)}</span>
+          <div class="grow">
+            <b class="r-name">${esc(r.name)}</b>
+            <small class="muted">${r.items.length} exercícios${lastDoneLabel(r.id)}</small>
+          </div>
+          <button class="go" data-a="start" data-id="${r.id}" aria-label="Iniciar ${esc(r.name)}">${ic('play')}</button>
+        </div>`).join('') || emptyState('list', 'Nenhuma rotina ainda. Crie uma na aba Rotinas.')}
     </div>
-    <button class="btn ghost wide" data-a="start">+ Treino livre (sem rotina)</button>`;
+    <button class="btn ghost wide" data-a="start">${ic('plus')} Treino livre</button>`;
 }
 
 function nextRoutine() {
@@ -180,19 +245,21 @@ function vActive() {
   const a = S.active;
   const done = a.entries.reduce((n, en) => n + en.sets.filter((s) => s.done).length, 0);
   const total = a.entries.reduce((n, en) => n + en.sets.length, 0);
+  const pct = total ? Math.round((done / total) * 100) : 0;
   return `
     <header class="top sticky">
       <div class="grow">
+        <p class="eyebrow live"><i></i><span data-elapsed="${a.start}">0:00</span> · ${done}/${total} séries</p>
         <h1 class="t-sm">${esc(a.name)}</h1>
-        <span class="muted small">⏱ <span data-elapsed="${a.start}">0:00</span> · ${done}/${total} séries</span>
       </div>
-      <button class="btn primary" data-a="finish">Finalizar</button>
+      <button class="btn primary" data-a="finish">${ic('check')} Finalizar</button>
+      <div class="progress" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
     </header>
-    ${a.entries.map(vEntry).join('') || '<div class="empty muted"><div class="e-icon">🏋️</div>Adicione o primeiro exercício.</div>'}
-    <button class="btn ghost wide" data-a="add-ex">+ Adicionar exercício</button>
-    <label class="field"><span>Anotações do treino</span>
+    ${a.entries.map(vEntry).join('') || emptyState('dumbbell', 'Adicione o primeiro exercício.')}
+    <button class="btn ghost wide" data-a="add-ex">${ic('plus')} Adicionar exercício</button>
+    <label class="field"><span>${ic('note')} Anotações do treino</span>
       <textarea data-f="notes" rows="2" placeholder="Como você se sentiu? Algo a ajustar?">${esc(a.notes)}</textarea></label>
-    <button class="btn danger-ghost wide" data-a="discard">Descartar treino</button>`;
+    <button class="btn danger-ghost wide" data-a="discard">${ic('trash')} Descartar treino</button>`;
 }
 
 /** Valores sugeridos (placeholder) para uma série: série anterior deste treino, ou a mesma série da última vez. */
@@ -218,35 +285,39 @@ function overloadTip(en, prev) {
 function vEntry(en, ei) {
   const prev = lastSets(en.exerciseId);
   const tip = overloadTip(en, prev);
+  const complete = en.sets.length && en.sets.every((s) => s.done);
   return `
-    <section class="card">
+    <section class="card ex ${complete ? 'complete' : ''}">
       <div class="ex-head">
-        <h3>${esc(exName(en.exerciseId))}</h3>
+        <span class="ex-num">${complete ? ic('check') : ei + 1}</span>
+        <div class="grow">
+          <h3>${esc(exName(en.exerciseId))}</h3>
+          <div class="ex-meta"><span>${en.sets.length} × ${esc(en.target)}</span><span>${ic('clock')} ${fmtRest(en.rest)}</span></div>
+        </div>
         <div class="ex-tools">
-          ${ei > 0 ? `<button class="icon" data-a="ex-up" data-ei="${ei}" aria-label="Mover para cima">↑</button>` : ''}
-          <button class="icon" data-a="ex-del" data-ei="${ei}" aria-label="Remover exercício">✕</button>
+          ${ei > 0 ? `<button class="icon" data-a="ex-up" data-ei="${ei}" aria-label="Mover para cima">${ic('up')}</button>` : ''}
+          <button class="icon" data-a="ex-del" data-ei="${ei}" aria-label="Remover exercício">${ic('x')}</button>
         </div>
       </div>
-      <div class="muted small">Meta ${en.sets.length} × ${esc(en.target)} · descanso ${fmtRest(en.rest)}</div>
-      ${tip ? `<div class="tip">💡 ${tip}</div>` : ''}
+      ${tip ? `<div class="tip">${ic('zap')}<span>${tip}</span></div>` : ''}
       <div class="sets">
-        <div class="set-row head"><span>#</span><span>Anterior</span><span>${unit()}</span><span>Reps</span><span></span></div>
+        <div class="set-row head"><span>Série</span><span>Anterior</span><span>${unit()}</span><span>Reps</span><span></span></div>
         ${en.sets.map((s, si) => {
           const p = prev[si];
           const sg = suggestion(en, si, prev);
           return `
           <div class="set-row ${s.done ? 'done' : ''}">
             <span class="n">${si + 1}</span>
-            <span class="prev">${p ? `${fmt(p.w)}×${p.r}` : '—'}</span>
+            <span class="prev">${p ? `${fmt(p.w)} × ${p.r}` : '—'}</span>
             <input inputmode="decimal" enterkeyhint="next" aria-label="Carga série ${si + 1}" data-ei="${ei}" data-si="${si}" data-f="w" value="${esc(s.w)}" placeholder="${esc(sg.w)}">
             <input inputmode="numeric" enterkeyhint="done" aria-label="Repetições série ${si + 1}" data-ei="${ei}" data-si="${si}" data-f="r" value="${esc(s.r)}" placeholder="${esc(sg.r)}">
-            <button class="check" data-a="toggle-set" data-ei="${ei}" data-si="${si}" aria-label="Concluir série ${si + 1}">✓</button>
+            <button class="check" data-a="toggle-set" data-ei="${ei}" data-si="${si}" aria-label="Concluir série ${si + 1}">${ic('check')}</button>
           </div>`;
         }).join('')}
       </div>
-      <div class="row gap">
-        <button class="btn sm" data-a="add-set" data-ei="${ei}">+ Série</button>
-        ${en.sets.length > 1 ? `<button class="btn sm ghost" data-a="del-set" data-ei="${ei}">− Série</button>` : ''}
+      <div class="ex-foot">
+        <button class="btn sm soft" data-a="add-set" data-ei="${ei}">${ic('plus')} Série</button>
+        ${en.sets.length > 1 ? `<button class="btn sm ghost" data-a="del-set" data-ei="${ei}">${ic('minus')} Série</button>` : ''}
       </div>
     </section>`;
 }
@@ -293,8 +364,8 @@ function finishWorkout() {
     const best1 = Math.max(...hist.map((s) => e1rm(s.w, s.r)));
     const nowW = Math.max(...en.sets.map((s) => s.w));
     const now1 = Math.max(...en.sets.map((s) => e1rm(s.w, s.r)));
-    if (nowW > bestW) prs.push(`${exName(en.exerciseId)}: carga máxima ${fmt(nowW)} ${unit()} (antes ${fmt(bestW)})`);
-    else if (now1 > best1 + 0.05) prs.push(`${exName(en.exerciseId)}: 1RM estimado ${fmt(now1)} ${unit()} (antes ${fmt(best1)})`);
+    if (nowW > bestW) prs.push([exName(en.exerciseId), `Carga máxima: ${fmt(nowW)} ${unit()}`, `antes ${fmt(bestW)}`]);
+    else if (now1 > best1 + 0.05) prs.push([exName(en.exerciseId), `1RM estimado: ${fmt(now1)} ${unit()}`, `antes ${fmt(best1)}`]);
   }
 
   const session = { id: a.id, routineId: a.routineId, name: a.name, start: a.start, end: Date.now(), notes: a.notes.trim(), entries };
@@ -317,59 +388,76 @@ function discardWorkout() {
 
 function showSummary(s, prs) {
   openModal(`
-    <div class="sheet-head"><h2>Treino concluído! 🎉</h2></div>
-    <p class="muted">${esc(s.name)}</p>
+    <div class="done-hero">
+      <span class="done-ic">${ic('trophy')}</span>
+      <h2>Treino concluído!</h2>
+      <p class="muted">${esc(s.name)}</p>
+    </div>
     <div class="summary-grid">
       <div><b>${fmtDur(s.end - s.start)}</b><span>duração</span></div>
       <div><b>${sessionSets(s)}</b><span>séries</span></div>
       <div><b>${fmtInt(sessionVolume(s))}</b><span>volume (${unit()})</span></div>
     </div>
-    ${prs.length ? `<h3 class="sec">🏆 Novos recordes</h3>${prs.map((p) => `<p class="pr">${esc(p)}</p>`).join('')}` : '<p class="muted small">Continue firme — consistência é o que traz resultado.</p>'}
-    <button class="btn primary big" data-a="close-modal" style="margin-top:14px">Fechar</button>`);
+    ${prs.length ? `
+      <h3 class="sec">Novos recordes</h3>
+      <div class="pr-list">${prs.map(([ex, what, before]) => `
+        <div class="pr-item"><span class="pr-ic">${ic('trophy')}</span><div class="grow"><b>${esc(ex)}</b><small>${esc(what)} · ${esc(before)}</small></div></div>`).join('')}</div>`
+      : '<p class="muted small center">Continue firme: consistência é o que traz resultado.</p>'}
+    <button class="btn primary big" data-a="close-modal" style="margin-top:18px">Fechar</button>`);
 }
 
 /* ----- Rotinas ----- */
 function vRotinas() {
   return `
-    <header class="top"><h1 class="grow">Rotinas</h1><button class="btn primary" data-a="ed-new">+ Nova</button></header>
+    <header class="top">
+      <div class="grow"><p class="eyebrow">${S.routines.length} rotinas</p><h1>Rotinas</h1></div>
+      <button class="btn primary sm" data-a="ed-new">${ic('plus')} Nova</button>
+    </header>
     <div class="list">
       ${S.routines.map((r, i) => `
-        <div class="card">
-          <div class="ex-head">
-            <b>${esc(r.name)}</b>
+        <div class="card rt">
+          <div class="rt-head">
+            <span class="badge" style="${grad(r)}">${badge(r.name)}</span>
+            <div class="grow">
+              <b class="r-name">${esc(r.name)}</b>
+              <small class="muted">${r.items.length} exercícios · ~${estMin(r)} min${lastDoneLabel(r.id)}</small>
+            </div>
             <div class="ex-tools">
-              ${i > 0 ? `<button class="icon" data-a="rt-up" data-i="${i}" aria-label="Mover para cima">↑</button>` : ''}
-              <button class="icon" data-a="ed-open" data-id="${r.id}" aria-label="Editar">✎</button>
+              ${i > 0 ? `<button class="icon" data-a="rt-up" data-i="${i}" aria-label="Mover para cima">${ic('up')}</button>` : ''}
+              <button class="icon" data-a="ed-open" data-id="${r.id}" aria-label="Editar">${ic('edit')}</button>
             </div>
           </div>
-          <p class="muted small">${r.items.map((it) => `${esc(exName(it.exerciseId))} <span style="opacity:.7">${it.sets}×${esc(it.reps)}</span>`).join(' · ') || 'Sem exercícios'}</p>
+          <ol class="rt-list">
+            ${r.items.map((it) => `<li><span>${esc(exName(it.exerciseId))}</span><span class="muted">${it.sets} × ${esc(it.reps)}</span></li>`).join('') || '<li class="muted">Sem exercícios</li>'}
+          </ol>
           <div class="row gap">
-            <button class="btn sm primary" data-a="start" data-id="${r.id}" ${S.active ? 'disabled' : ''}>Iniciar</button>
-            <button class="btn sm" data-a="rt-dup" data-id="${r.id}">Duplicar</button>
+            <button class="btn sm primary" data-a="start" data-id="${r.id}" ${S.active ? 'disabled' : ''}>${ic('play')} Iniciar</button>
+            <button class="btn sm soft" data-a="rt-dup" data-id="${r.id}">${ic('copy')} Duplicar</button>
           </div>
-        </div>`).join('') || '<div class="empty muted"><div class="e-icon">📋</div>Nenhuma rotina. Crie a primeira!</div>'}
+        </div>`).join('') || emptyState('list', 'Nenhuma rotina. Crie a primeira!')}
     </div>
-    <p class="muted small" style="margin-top:14px">A ordem das rotinas define o “próximo treino sugerido” (A → B → C → A…).</p>`;
+    <p class="hint">A ordem das rotinas define o próximo treino sugerido (A → B → C → A…).</p>`;
 }
 
 function vEditor() {
   const d = ui.draft;
   return `
     <header class="top">
-      <button class="icon" data-a="ed-cancel" aria-label="Voltar">←</button>
+      <button class="icon" data-a="ed-cancel" aria-label="Voltar">${ic('back')}</button>
       <h1 class="t-sm grow">${d.isNew ? 'Nova rotina' : 'Editar rotina'}</h1>
-      <button class="btn primary" data-a="ed-save">Salvar</button>
+      <button class="btn primary sm" data-a="ed-save">${ic('check')} Salvar</button>
     </header>
     <label class="field"><span>Nome da rotina</span>
       <input data-ed="name" value="${esc(d.name)}" placeholder="Ex.: Treino A — Peito"></label>
-    <h3 class="sec">Exercícios</h3>
+    <div class="sec-head"><h3>Exercícios</h3><span class="muted small">${d.items.length}</span></div>
     ${d.items.map((it, i) => `
-      <div class="card">
+      <div class="card ex">
         <div class="ex-head">
-          <b>${i + 1}. ${esc(exName(it.exerciseId))}</b>
+          <span class="ex-num">${i + 1}</span>
+          <b class="grow">${esc(exName(it.exerciseId))}</b>
           <div class="ex-tools">
-            ${i > 0 ? `<button class="icon" data-a="ed-up" data-i="${i}" aria-label="Mover para cima">↑</button>` : ''}
-            <button class="icon" data-a="ed-del" data-i="${i}" aria-label="Remover">✕</button>
+            ${i > 0 ? `<button class="icon" data-a="ed-up" data-i="${i}" aria-label="Mover para cima">${ic('up')}</button>` : ''}
+            <button class="icon" data-a="ed-del" data-i="${i}" aria-label="Remover">${ic('x')}</button>
           </div>
         </div>
         <div class="grid3">
@@ -377,9 +465,9 @@ function vEditor() {
           <label class="field"><span>Reps</span><input data-ed="reps" data-i="${i}" value="${esc(it.reps)}" placeholder="8-12"></label>
           <label class="field"><span>Descanso (s)</span><input inputmode="numeric" data-ed="rest" data-i="${i}" value="${esc(it.rest)}"></label>
         </div>
-      </div>`).join('') || '<p class="muted">Nenhum exercício ainda.</p>'}
-    <button class="btn ghost wide" data-a="ed-add">+ Adicionar exercício</button>
-    ${d.isNew ? '' : '<button class="btn danger-ghost wide" data-a="ed-delete">Excluir rotina</button>'}`;
+      </div>`).join('') || emptyState('dumbbell', 'Nenhum exercício ainda.')}
+    <button class="btn ghost wide" data-a="ed-add">${ic('plus')} Adicionar exercício</button>
+    ${d.isNew ? '' : `<button class="btn danger-ghost wide" data-a="ed-delete">${ic('trash')} Excluir rotina</button>`}`;
 }
 
 function saveDraft() {
@@ -398,7 +486,7 @@ function saveDraft() {
   save();
   ui.draft = null;
   render();
-  toast('Rotina salva ✔');
+  toast('Rotina salva');
 }
 
 /* ----- Histórico ----- */
@@ -406,38 +494,49 @@ function vHistorico() {
   const list = [...S.sessions].sort((a, b) => b.start - a.start);
   const now = Date.now();
   const last30 = list.filter((s) => s.start > now - 30 * DAY);
-  // Mapa das últimas 4 semanas (seg → dom)
+  // Mapa das últimas 5 semanas (seg → dom)
   const trainedDays = new Set(S.sessions.map((s) => dayStart(s.start)));
-  const first = weekStart(now) - 21 * DAY;
+  const first = weekStart(now) - 28 * DAY;
   const cells = [];
-  for (let i = 0; i < 28; i++) {
+  for (let i = 0; i < 35; i++) {
     const d = new Date(first); d.setDate(d.getDate() + i);
     const t = d.getTime();
-    cells.push(`<i class="${trainedDays.has(t) ? 'on' : ''} ${t === dayStart(now) ? 'today' : ''}" title="${fmtDate(t)}"></i>`);
+    cells.push(`<i class="${trainedDays.has(t) ? 'on' : ''} ${t === dayStart(now) ? 'today' : ''} ${t > now ? 'future' : ''}" title="${fmtDate(t)}"></i>`);
   }
   return `
-    <header class="top"><h1 class="grow">Histórico</h1></header>
+    <header class="top"><div class="grow"><p class="eyebrow">Últimos 30 dias</p><h1>Histórico</h1></div></header>
     <div class="card">
-      <div class="row"><div class="grow"><b>${last30.length} treinos</b> <span class="muted small">nos últimos 30 dias</span></div>
-      <span class="muted small">${fmtInt(last30.reduce((v, s) => v + sessionVolume(s), 0))} ${unit()} de volume</span></div>
-      <div class="heat" aria-label="Dias treinados nas últimas 4 semanas">${cells.join('')}</div>
+      <div class="kpis">
+        <div><b>${last30.length}</b><span>treinos</span></div>
+        <div><b>${fmtInt(last30.reduce((v, s) => v + sessionVolume(s), 0))}</b><span>${unit()} de volume</span></div>
+        <div><b>${last30.reduce((n, s) => n + sessionSets(s), 0)}</b><span>séries</span></div>
+      </div>
+      <div class="heat-head">${['S', 'T', 'Q', 'Q', 'S', 'S', 'D'].map((d) => `<span>${d}</span>`).join('')}</div>
+      <div class="heat" aria-label="Dias treinados nas últimas 5 semanas">${cells.join('')}</div>
     </div>
-    <h3 class="sec">Sessões</h3>
+    <div class="sec-head"><h3>Sessões</h3><span class="muted small">${list.length}</span></div>
+    <div class="list">
     ${list.map((s) => `
-      <details class="card">
+      <details class="card sess">
         <summary>
-          <div class="grow"><b>${esc(s.name)}</b>
-            <div class="muted small">${fmtDate(s.start)} · ${fmtDur(s.end - s.start)} · ${sessionSets(s)} séries · ${fmtInt(sessionVolume(s))} ${unit()}</div></div>
+          <span class="date-blk"><b>${new Date(s.start).getDate()}</b><small>${fmtDate(s.start, { month: 'short' }).replace('.', '')}</small></span>
+          <div class="grow">
+            <b class="r-name">${esc(s.name)}</b>
+            <div class="sess-meta"><span>${ic('clock')} ${fmtDur(s.end - s.start)}</span><span>${ic('layers')} ${sessionSets(s)} séries</span><span>${ic('dumbbell')} ${fmtInt(sessionVolume(s))} ${unit()}</span></div>
+          </div>
         </summary>
-        ${s.entries.map((en) => `
-          <div class="hist-ex"><b>${esc(exName(en.exerciseId))}</b>
-            <div class="sets-line">${en.sets.map((x) => `${fmt(x.w)}×${x.r}`).join(' · ')}</div></div>`).join('')}
-        ${s.notes ? `<p class="muted small" style="margin-top:10px">📝 ${esc(s.notes)}</p>` : ''}
-        <div class="row gap">
-          <button class="btn sm" data-a="to-routine" data-id="${s.id}">Salvar como rotina</button>
-          <button class="btn sm danger-ghost" data-a="del-session" data-id="${s.id}">Excluir</button>
+        <div class="sess-body">
+          ${s.entries.map((en) => `
+            <div class="hist-ex"><b>${esc(exName(en.exerciseId))}</b>
+              <div class="set-chips">${en.sets.map((x) => `<span>${fmt(x.w)} × ${x.r}</span>`).join('')}</div></div>`).join('')}
+          ${s.notes ? `<p class="note">${ic('note')} ${esc(s.notes)}</p>` : ''}
+          <div class="row gap">
+            <button class="btn sm soft" data-a="to-routine" data-id="${s.id}">${ic('copy')} Salvar como rotina</button>
+            <button class="btn sm danger-ghost" data-a="del-session" data-id="${s.id}">${ic('trash')} Excluir</button>
+          </div>
         </div>
-      </details>`).join('') || '<div class="empty muted"><div class="e-icon">🗓️</div>Seus treinos finalizados aparecem aqui.</div>'}`;
+      </details>`).join('') || emptyState('calendar', 'Seus treinos finalizados aparecem aqui.')}
+    </div>`;
 }
 
 /* ----- Progresso ----- */
@@ -446,7 +545,7 @@ function vProgresso() {
     .filter(exById).sort((a, b) => exName(a).localeCompare(exName(b), 'pt-BR'));
   let body = '';
   if (!used.length) {
-    body = '<div class="empty muted"><div class="e-icon">📈</div>Finalize um treino para ver sua evolução por exercício.</div>';
+    body = emptyState('chart', 'Finalize um treino para ver sua evolução por exercício.');
   } else {
     if (!used.includes(ui.progEx)) {
       const last = [...S.sessions].sort((a, b) => b.start - a.start)[0];
@@ -454,65 +553,75 @@ function vProgresso() {
     }
     const hist = historyOf(ui.progEx);
     const metrics = {
-      e1rm: ['1RM estimado', (sets) => Math.max(...sets.map((s) => e1rm(s.w, s.r)))],
-      max: ['Carga máxima', (sets) => Math.max(...sets.map((s) => s.w))],
-      vol: ['Volume', (sets) => sets.reduce((v, s) => v + s.w * s.r, 0)],
-      reps: ['Reps totais', (sets) => sets.reduce((v, s) => v + s.r, 0)],
+      e1rm: ['1RM', '1RM estimado', (sets) => Math.max(...sets.map((s) => e1rm(s.w, s.r)))],
+      max: ['Carga', 'Carga máxima', (sets) => Math.max(...sets.map((s) => s.w))],
+      vol: ['Volume', 'Volume por treino', (sets) => sets.reduce((v, s) => v + s.w * s.r, 0)],
+      reps: ['Reps', 'Repetições por treino', (sets) => sets.reduce((v, s) => v + s.r, 0)],
     };
-    const [label, fn] = metrics[ui.metric];
+    const [, label, fn] = metrics[ui.metric];
     const pts = hist.map((h) => ({ x: h.date, y: fn(h.sets) }));
     const all = hist.flatMap((h) => h.sets.map((s) => ({ ...s, date: h.date })));
     const bestW = all.reduce((b, s) => (s.w > b.w || (s.w === b.w && s.r > b.r) ? s : b), all[0]);
     const best1 = all.reduce((b, s) => (e1rm(s.w, s.r) > e1rm(b.w, b.r) ? s : b), all[0]);
     const first = pts[0]?.y ?? 0, lastV = pts[pts.length - 1]?.y ?? 0;
     const diff = first ? ((lastV - first) / first) * 100 : 0;
+    const u = ui.metric === 'reps' ? '' : unit();
     body = `
-      <label class="field"><span>Exercício</span>
-        <select data-c="prog-ex">${used.map((id) => `<option value="${id}" ${id === ui.progEx ? 'selected' : ''}>${esc(exName(id))}</option>`).join('')}</select></label>
-      <div class="chips">${Object.entries(metrics).map(([k, [l]]) => `<button class="chip ${k === ui.metric ? 'on' : ''}" data-a="metric" data-m="${k}">${l}</button>`).join('')}</div>
-      <div class="card">
-        <div class="row"><b class="grow">${label}</b>
-          ${pts.length > 1 ? `<span class="small ${diff >= 0 ? 'pr' : 'muted'}">${diff >= 0 ? '▲' : '▼'} ${fmt(Math.abs(diff))}% desde o início</span>` : ''}</div>
-        ${lineChart(pts, ui.metric === 'reps' ? '' : unit())}
-        <div class="records">
-          <div><b>${fmt(bestW.w)} ${unit()} × ${bestW.r}</b><span>Maior carga · ${fmtDate(bestW.date, { day: '2-digit', month: '2-digit' })}</span></div>
-          <div><b>${fmt(e1rm(best1.w, best1.r))} ${unit()}</b><span>Melhor 1RM estimado</span></div>
-          <div><b>${hist.length}</b><span>sessões registradas</span></div>
-          <div><b>${fmtInt(all.reduce((v, s) => v + s.w * s.r, 0))}</b><span>volume total (${unit()})</span></div>
-        </div>
+      <div class="select-wrap">
+        <select data-c="prog-ex" aria-label="Exercício">${used.map((id) => `<option value="${id}" ${id === ui.progEx ? 'selected' : ''}>${esc(exName(id))}</option>`).join('')}</select>
       </div>
-      <h3 class="sec">Últimas sessões</h3>
+      <div class="seg">${Object.entries(metrics).map(([k, [short]]) => `<button class="${k === ui.metric ? 'on' : ''}" data-a="metric" data-m="${k}">${short}</button>`).join('')}</div>
+      <div class="card chart-card">
+        <p class="eyebrow">${label}</p>
+        <div class="row" style="align-items:baseline">
+          <span class="big-num">${fmt(lastV)}<small>${u ? ` ${u}` : ''}</small></span>
+          ${pts.length > 1 ? `<span class="delta ${diff >= 0 ? 'up' : 'down'}">${diff >= 0 ? '↑' : '↓'} ${fmt(Math.abs(diff))}%</span>` : ''}
+        </div>
+        ${lineChart(pts, u, 'c1')}
+      </div>
+      <div class="records">
+        <div><span class="rec-ic r1">${ic('dumbbell')}</span><b>${fmt(bestW.w)} ${unit()} × ${bestW.r}</b><span>Maior carga · ${fmtDate(bestW.date, { day: '2-digit', month: '2-digit' })}</span></div>
+        <div><span class="rec-ic r2">${ic('zap')}</span><b>${fmt(e1rm(best1.w, best1.r))} ${unit()}</b><span>Melhor 1RM estimado</span></div>
+        <div><span class="rec-ic r3">${ic('calendar')}</span><b>${hist.length}</b><span>Sessões registradas</span></div>
+        <div><span class="rec-ic r4">${ic('layers')}</span><b>${fmtInt(all.reduce((v, s) => v + s.w * s.r, 0))}</b><span>Volume total (${unit()})</span></div>
+      </div>
+      <div class="sec-head"><h3>Últimas sessões</h3></div>
       <div class="card">${hist.slice(-6).reverse().map((h) => `
-        <div class="row" style="padding:6px 0"><span class="muted small" style="width:74px">${fmtDate(h.date, { day: '2-digit', month: '2-digit', year: '2-digit' })}</span>
-        <span class="sets-line grow">${h.sets.map((s) => `${fmt(s.w)}×${s.r}`).join(' · ')}</span></div>`).join('')}</div>`;
+        <div class="hist-row"><span class="muted small">${fmtDate(h.date, { day: '2-digit', month: 'short' }).replace('.', '')}</span>
+        <div class="set-chips">${h.sets.map((s) => `<span>${fmt(s.w)} × ${s.r}</span>`).join('')}</div></div>`).join('')}</div>`;
   }
 
   const bw = [...S.bodyweight].sort((a, b) => a.date - b.date);
   const bwLast = bw[bw.length - 1];
+  const bwDiff = bw.length > 1 ? bwLast.w - bw[0].w : 0;
   return `
-    <header class="top"><h1 class="grow">Progresso</h1></header>
+    <header class="top"><div class="grow"><p class="eyebrow">Sua evolução</p><h1>Progresso</h1></div></header>
     ${body}
-    <h3 class="sec">Peso corporal</h3>
+    <div class="sec-head"><h3>Peso corporal</h3></div>
     <div class="card">
-      <div class="row">
-        <input inputmode="decimal" id="bw-in" placeholder="${bwLast ? fmt(bwLast.w) : 'Seu peso'} ${unit()}" aria-label="Peso corporal">
+      ${bwLast ? `
+        <div class="row" style="align-items:baseline">
+          <span class="big-num">${fmt(bwLast.w)}<small> ${unit()}</small></span>
+          ${bw.length > 1 ? `<span class="delta neutral">${bwDiff >= 0 ? '+' : ''}${fmt(bwDiff)} ${unit()}</span>` : ''}
+        </div>
+        <p class="small muted" style="margin:2px 0 0">${fmtDate(bwLast.date)} · <a href="#" data-a="bw-undo">desfazer último</a></p>` : ''}
+      ${lineChart(bw.map((b) => ({ x: b.date, y: b.w })), unit(), 'c2')}
+      <div class="row" style="margin-top:12px">
+        <input inputmode="decimal" id="bw-in" placeholder="Peso de hoje (${unit()})" aria-label="Peso corporal">
         <button class="btn primary" data-a="bw-add">Registrar</button>
       </div>
-      ${bwLast ? `<p class="small muted">Último: <b style="color:var(--text)">${fmt(bwLast.w)} ${unit()}</b> em ${fmtDate(bwLast.date)}${bw.length > 1 ? ` · variação ${bwLast.w - bw[0].w >= 0 ? '+' : ''}${fmt(bwLast.w - bw[0].w)} ${unit()}` : ''}
-        · <a href="#" data-a="bw-undo" style="color:var(--muted)">desfazer último</a></p>` : ''}
-      ${lineChart(bw.map((b) => ({ x: b.date, y: b.w })), unit())}
     </div>`;
 }
 
-function lineChart(pts, u = '') {
+function lineChart(pts, u = '', id = 'c') {
   if (pts.length < 2) {
-    return `<div class="chart-empty muted small">${pts.length ? 'Registre mais uma vez para ver o gráfico.' : 'Sem dados ainda.'}</div>`;
+    return `<div class="chart-empty">${ic('chart')}<span>${pts.length ? 'Registre mais uma vez para ver o gráfico.' : 'Sem dados ainda.'}</span></div>`;
   }
-  const W = 340, H = 170, P = { l: 34, r: 14, t: 18, b: 22 };
+  const W = 340, H = 160, P = { l: 30, r: 12, t: 16, b: 22 };
   const xs = pts.map((p) => p.x), ys = pts.map((p) => p.y);
   const x0 = Math.min(...xs), x1 = Math.max(...xs) === x0 ? x0 + 1 : Math.max(...xs);
   let y0 = Math.min(...ys), y1 = Math.max(...ys);
-  const pad = (y1 - y0) * 0.15 || Math.max(1, y1 * 0.1);
+  const pad = (y1 - y0) * 0.2 || Math.max(1, y1 * 0.1);
   y0 = Math.max(0, y0 - pad); y1 += pad;
   const X = (x) => P.l + ((x - x0) / (x1 - x0)) * (W - P.l - P.r);
   const Y = (y) => H - P.b - ((y - y0) / (y1 - y0)) * (H - P.t - P.b);
@@ -526,14 +635,19 @@ function lineChart(pts, u = '') {
   const lx = X(last.x), ly = Y(last.y);
   return `
     <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Gráfico de evolução">
+      <defs>
+        <linearGradient id="${id}-l" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#ff8a3d"/><stop offset="1" stop-color="#ff2d78"/></linearGradient>
+        <linearGradient id="${id}-a" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#ff2d78" stop-opacity=".35"/><stop offset="1" stop-color="#ff2d78" stop-opacity="0"/></linearGradient>
+      </defs>
       ${ticks}
-      <path class="area" d="${area}"/>
-      <path class="line" d="${line}"/>
-      ${pts.length <= 40 ? pts.slice(0, -1).map((p) => `<circle class="dot" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="3"/>`).join('') : ''}
+      <path d="${area}" fill="url(#${id}-a)"/>
+      <path class="line" d="${line}" stroke="url(#${id}-l)"/>
+      ${pts.length <= 40 ? pts.slice(0, -1).map((p) => `<circle class="dot" cx="${X(p.x).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="2.5"/>`).join('') : ''}
+      <circle class="halo" cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="9"/>
       <circle class="last" cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="4.5"/>
-      <text class="val" x="${Math.min(lx, W - P.r).toFixed(1)}" y="${(ly - 9).toFixed(1)}" text-anchor="end">${fmt(last.y)}${u ? ` ${u}` : ''}</text>
-      <text x="${P.l}" y="${H - 6}">${dd(pts[0].x)}</text>
-      <text x="${W - P.r}" y="${H - 6}" text-anchor="end">${dd(last.x)}</text>
+      <text class="val" x="${Math.min(lx, W - P.r).toFixed(1)}" y="${(ly - 13).toFixed(1)}" text-anchor="end">${fmt(last.y)}${u ? ` ${u}` : ''}</text>
+      <text x="${P.l}" y="${H - 5}">${dd(pts[0].x)}</text>
+      <text x="${W - P.r}" y="${H - 5}" text-anchor="end">${dd(last.x)}</text>
     </svg>`;
 }
 
@@ -541,33 +655,33 @@ function lineChart(pts, u = '') {
 function vAjustes() {
   const st = S.settings;
   return `
-    <header class="top"><h1 class="grow">Ajustes</h1></header>
-    <div class="card">
-      <label class="field" style="margin-top:0"><span>Descanso padrão (segundos)</span>
-        <input inputmode="numeric" data-c="set-rest" value="${st.rest}"></label>
-      <label class="field"><span>Unidade de carga</span>
-        <select data-c="set-unit">
-          <option value="kg" ${st.unit === 'kg' ? 'selected' : ''}>Quilos (kg)</option>
-          <option value="lb" ${st.unit === 'lb' ? 'selected' : ''}>Libras (lb)</option>
+    <header class="top"><div class="grow"><p class="eyebrow">Preferências</p><h1>Ajustes</h1></div></header>
+    <div class="sec-head"><h3>Treino</h3></div>
+    <div class="group">
+      <label class="g-row"><span class="g-ic i1">${ic('clock')}</span><span class="grow">Descanso padrão</span>
+        <span class="g-input"><input inputmode="numeric" data-c="set-rest" value="${st.rest}" aria-label="Descanso padrão em segundos"><small>s</small></span></label>
+      <label class="g-row"><span class="g-ic i2">${ic('dumbbell')}</span><span class="grow">Unidade de carga</span>
+        <select class="g-select" data-c="set-unit">
+          <option value="kg" ${st.unit === 'kg' ? 'selected' : ''}>kg</option>
+          <option value="lb" ${st.unit === 'lb' ? 'selected' : ''}>lb</option>
         </select></label>
-      <label class="check-field"><span>Som ao fim do descanso</span><input type="checkbox" data-c="set-sound" ${st.sound ? 'checked' : ''}></label>
-      <label class="check-field"><span>Vibrar ao fim do descanso</span><input type="checkbox" data-c="set-vibrate" ${st.vibrate ? 'checked' : ''}></label>
+      <label class="g-row"><span class="g-ic i3">${ic('bell')}</span><span class="grow">Som ao fim do descanso</span>
+        <input type="checkbox" class="switch" data-c="set-sound" ${st.sound ? 'checked' : ''}></label>
+      <label class="g-row"><span class="g-ic i4">${ic('phone')}</span><span class="grow">Vibrar ao fim do descanso</span>
+        <input type="checkbox" class="switch" data-c="set-vibrate" ${st.vibrate ? 'checked' : ''}></label>
     </div>
-    <h3 class="sec">Seus dados</h3>
-    <div class="card">
-      <p class="small muted" style="margin-top:0">Tudo fica salvo só neste aparelho/navegador. Faça backup de vez em quando.</p>
-      <div class="row gap" style="flex-wrap:wrap">
-        <button class="btn" data-a="export">⬇️ Exportar backup</button>
-        <label class="btn">⬆️ Importar backup<input type="file" accept="application/json,.json" data-c="import" hidden></label>
-      </div>
-      <p class="small muted">${S.sessions.length} treinos · ${S.routines.length} rotinas · ${S.exercises.length} exercícios</p>
-      <button class="btn danger-ghost wide" data-a="reset">Apagar todos os dados</button>
+    <div class="sec-head"><h3>Seus dados</h3></div>
+    <div class="group">
+      <button class="g-row" data-a="export"><span class="g-ic i2">${ic('download')}</span><span class="grow">Exportar backup</span></button>
+      <label class="g-row"><span class="g-ic i2">${ic('upload')}</span><span class="grow">Importar backup</span><input type="file" accept="application/json,.json" data-c="import" hidden></label>
+      <button class="g-row danger" data-a="reset"><span class="g-ic i5">${ic('trash')}</span><span class="grow">Apagar todos os dados</span></button>
     </div>
-    <h3 class="sec">Instalar no celular</h3>
-    <div class="card small muted">
-      <p style="margin-top:0"><b style="color:var(--text)">Android (Chrome):</b> menu ⋮ → “Instalar app” ou “Adicionar à tela inicial”.</p>
-      <p><b style="color:var(--text)">iPhone (Safari):</b> botão Compartilhar → “Adicionar à Tela de Início”.</p>
-      <p>Depois de instalado, o app funciona offline.</p>
+    <p class="hint">${S.sessions.length} treinos · ${S.routines.length} rotinas · ${S.exercises.length} exercícios. Tudo fica salvo só neste aparelho; faça backup de vez em quando.</p>
+    <div class="sec-head"><h3>Instalar no celular</h3></div>
+    <div class="card install">
+      <p><b>Android (Chrome)</b><br><span class="muted">Menu ⋮ → “Instalar app”.</span></p>
+      <p><b>iPhone (Safari)</b><br><span class="muted">Compartilhar → “Adicionar à Tela de Início”.</span></p>
+      <p class="muted small">Depois de instalado, o app funciona offline.</p>
     </div>`;
 }
 
@@ -587,8 +701,8 @@ function closeModal() {
 function openPicker(onPick) {
   ui.pick = onPick;
   openModal(`
-    <div class="sheet-head"><h2>Escolher exercício</h2><button class="icon" data-a="close-modal" aria-label="Fechar">✕</button></div>
-    <input id="pick-q" type="search" placeholder="Buscar ou criar exercício…" autocomplete="off">
+    <div class="sheet-head"><h2>Escolher exercício</h2><button class="icon" data-a="close-modal" aria-label="Fechar">${ic('x')}</button></div>
+    <div class="search">${ic('search')}<input id="pick-q" type="search" placeholder="Buscar ou criar exercício…" autocomplete="off"></div>
     <div class="pick-list" id="pick-list">${pickList('')}</div>`);
   setTimeout(() => $('#pick-q')?.focus(), 50);
 }
@@ -600,14 +714,14 @@ function pickList(q) {
   const exact = S.exercises.some((e) => norm(e.name) === nq);
   return `
     ${q.trim() && !exact ? `
-      <div class="card" style="margin-top:6px">
-        <b>Criar “${esc(q.trim())}”</b>
-        <div class="row gap"><select id="pick-muscle">${MUSCLES.map((m) => `<option>${m}</option>`).join('')}</select>
+      <div class="create">
+        <b>${ic('plus')} Criar “${esc(q.trim())}”</b>
+        <div class="row gap"><select id="pick-muscle" aria-label="Grupo muscular">${MUSCLES.map((m) => `<option>${m}</option>`).join('')}</select>
         <button class="btn primary" data-a="pick-new">Criar</button></div>
       </div>` : ''}
     ${groups.map(([m, list]) => `
       <div class="pick-group">${m}</div>
-      ${list.map((e) => `<button class="pick-item" data-a="pick" data-id="${e.id}"><span>${esc(e.name)}</span><span class="muted small">${historyOf(e.id).length || ''}</span></button>`).join('')}`).join('')}
+      ${list.map((e) => { const n = historyOf(e.id).length; return `<button class="pick-item" data-a="pick" data-id="${e.id}"><span>${esc(e.name)}</span>${n ? `<span class="count">${n}×</span>` : ''}</button>`; }).join('')}`).join('')}
     ${!found.length && !q.trim() ? '<p class="muted">Nenhum exercício.</p>' : ''}`;
 }
 
@@ -648,13 +762,13 @@ function tick() {
   if (left <= 0) {
     if (!rest.fired) { rest.fired = true; alarm(); }
     box.classList.add('over');
-    $('#rest-time').textContent = 'Próxima série! 💥';
-    $('#rest-fill').style.width = '0%';
+    $('#rest-time').textContent = 'Bora!';
+    $('#rest-ring').style.strokeDashoffset = '0';
     if (left < -15000) stopRest();
   } else {
     box.classList.remove('over');
     $('#rest-time').textContent = fmtClock(left + 999);
-    $('#rest-fill').style.width = `${Math.min(100, (left / rest.total) * 100)}%`;
+    $('#rest-ring').style.strokeDashoffset = String(100 - Math.min(100, (left / rest.total) * 100));
   }
 }
 setInterval(tick, 250);
@@ -897,6 +1011,8 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* ---------- Início ---------- */
+$('#nav').innerHTML = TABS.map(([t, i, l]) => `<button data-a="tab" data-tab="${t}">${ic(i)}<span>${l}</span></button>`).join('');
+$('#rest-skip').innerHTML = ic('x');
 render();
 if (S.active) wake(true);
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

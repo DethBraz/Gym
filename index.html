@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0e1013">
+  <meta name="theme-color" content="#09090b">
   <meta name="description" content="Diário de treino: rotinas, séries, timer de descanso e progresso.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -12,33 +12,30 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main id="main" class="wrap"></main>
 
   <div id="rest" class="rest" hidden>
-    <div class="rest-bar"><i id="rest-fill"></i></div>
-    <div class="rest-body">
-      <div>
-        <small class="muted">Descanso</small>
-        <strong id="rest-time">0:00</strong>
-      </div>
-      <div class="rest-btns">
-        <button class="btn sm" data-a="rest-add" data-s="-15">−15s</button>
-        <button class="btn sm" data-a="rest-add" data-s="15">+15s</button>
-        <button class="btn sm primary" data-a="rest-skip">Pular</button>
-      </div>
+    <div class="ring" aria-hidden="true">
+      <svg viewBox="0 0 48 48"><circle class="ring-bg" cx="24" cy="24" r="20"/><circle id="rest-ring" class="ring-fg" cx="24" cy="24" r="20" pathLength="100"/></svg>
+    </div>
+    <div class="grow">
+      <small>Descanso</small>
+      <strong id="rest-time">0:00</strong>
+    </div>
+    <div class="rest-btns">
+      <button class="btn sm soft" data-a="rest-add" data-s="-15">−15</button>
+      <button class="btn sm soft" data-a="rest-add" data-s="15">+15</button>
+      <button class="icon" id="rest-skip" data-a="rest-skip" aria-label="Pular descanso"></button>
     </div>
   </div>
 
-  <nav class="nav" aria-label="Navegação principal">
-    <button data-a="tab" data-tab="treino"><span aria-hidden="true">🏋️</span>Treino</button>
-    <button data-a="tab" data-tab="rotinas"><span aria-hidden="true">📋</span>Rotinas</button>
-    <button data-a="tab" data-tab="historico"><span aria-hidden="true">🗓️</span>Histórico</button>
-    <button data-a="tab" data-tab="progresso"><span aria-hidden="true">📈</span>Progresso</button>
-    <button data-a="tab" data-tab="ajustes"><span aria-hidden="true">⚙️</span>Ajustes</button>
-  </nav>
+  <nav id="nav" class="nav" aria-label="Navegação principal"></nav>
 
   <div id="modal" class="modal" hidden></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
