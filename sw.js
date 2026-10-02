@@ -1,6 +1,7 @@
 // Service worker: guarda o app em cache para funcionar offline.
 // Estratégia "stale-while-revalidate": responde do cache e atualiza em segundo plano.
-const CACHE = 'gym-v1';
+const CACHE = 'gym-v2';
+const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 const ASSETS = ['./', 'index.html', 'styles.css', 'app.js', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', (e) => {
@@ -17,12 +18,14 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   const req = e.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+  const url = new URL(req.url);
+  if (req.method !== 'GET') return;
+  if (url.origin !== location.origin && !FONT_HOSTS.includes(url.hostname)) return;
   e.respondWith(
     caches.open(CACHE).then(async (cache) => {
-      const hit = await cache.match(req, { ignoreSearch: true });
+      const hit = await cache.match(req, { ignoreSearch: url.origin === location.origin });
       const net = fetch(req)
-        .then((res) => { if (res.ok) cache.put(req, res.clone()); return res; })
+        .then((res) => { if (res.ok || res.type === 'opaque') cache.put(req, res.clone()); return res; })
         .catch(() => hit);
       return hit || net;
     })
